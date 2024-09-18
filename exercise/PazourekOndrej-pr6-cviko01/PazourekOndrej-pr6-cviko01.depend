@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1726571881 source:r:\maturita\pazourekondrej-pr6-cviko01\main.c
+	"gvid.h"
+	<stdio.h>
+	<stdlib.h>
+	"mojematice.h"
+
+1593778839 r:\maturita\pazourekondrej-pr6-cviko01\gvid.h
+
+1726571256 source:r:\maturita\pazourekondrej-pr6-cviko01\mojematice.c
+	"mojematice.h"
+	<stdlib.h>
+
+1726571881 r:\maturita\pazourekondrej-pr6-cviko01\mojematice.h
+	"gvid.h"
+	<stdio.h>
+
