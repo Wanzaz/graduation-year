@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1726753728 source:r:\vpi\nasobilka01\main.c
+	"gvid.h"
+	<stdio.h>
+	<stdlib.h>
+
+1593693261 r:\vpi\nasobilka01\gvid.h
+
