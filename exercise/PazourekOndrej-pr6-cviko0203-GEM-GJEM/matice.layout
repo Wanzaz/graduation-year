@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
+	<ActiveTarget name="Debug" />
+	<File name="matice.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3751" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="14" />
+			<Collapse line="23" />
+			<Collapse line="30" />
+			<Collapse line="38" />
+			<Collapse line="54" />
+			<Collapse line="63" />
+			<Collapse line="75" />
+			<Collapse line="85" />
+			<Collapse line="96" />
+			<Collapse line="113" />
+			<Collapse line="135" />
+			<Collapse line="158" />
+			<Collapse line="184" />
+		</Folding>
+	</File>
+	<File name="main.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="21" />
+			<Collapse line="39" />
+			<Collapse line="50" />
+			<Collapse line="98" />
+			<Collapse line="116" />
+			<Collapse line="148" />
+			<Collapse line="178" />
+			<Collapse line="192" />
+			<Collapse line="203" />
+			<Collapse line="221" />
+			<Collapse line="237" />
+			<Collapse line="260" />
+			<Collapse line="278" />
+			<Collapse line="296" />
+			<Collapse line="317" />
+			<Collapse line="329" />
+			<Collapse line="341" />
+			<Collapse line="346" />
+		</Folding>
+	</File>
+	<File name="matice.c" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3224" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="12" />
+			<Collapse line="38" />
+			<Collapse line="47" />
+			<Collapse line="60" />
+			<Collapse line="79" />
+			<Collapse line="94" />
+			<Collapse line="101" />
+			<Collapse line="116" />
+			<Collapse line="123" />
+			<Collapse line="148" />
+		</Folding>
+	</File>
+</CodeBlocks_layout_file>
