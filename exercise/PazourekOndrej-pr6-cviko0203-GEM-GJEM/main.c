@@ -307,7 +307,7 @@ int gemPrimy(Tmatice *m)
             maticeVymenRadky(m, radek, p);
         }
         // Vypisování matice po každé výměně
-        // maticeTiskni(m); // SMAZAT PO TESTOVANI
+        maticeTiskni(m); // SMAZAT PO TESTOVANI
 
         // Provádění řádkových úprav pomocí funkce radkoveUpravy
         radkoveUpravy(m, radek);
@@ -507,7 +507,7 @@ void testMaticePoPrimemChodu(char *jmenoSouboru)
         printf("Matice není ve tvaru horní trojúhelníkové matice. Provedu přímý chod GEM...\n");
         // Provedení přímého chodu GEM (funkce již byla implementována)
         if (gemPrimy(matice) == CHYBA_RESENI) // Zavolej funkci pro provedení GEM
-            printf("FINALLLLLLLLLLL");
+            printf("CHYBA RESENI");
 
         // Otestuj znovu
         if (jeHorni(matice)) {
@@ -544,12 +544,6 @@ void testMaticePoPrimemChodu(char *jmenoSouboru)
  *
  * \param m Tmatice* Ukazatel na rozšířenou matici soustavy.
  */
-/** \brief Provede zpětný chod GEM.
- *
- * Hodnoty neznámých nastaví do posledního sloupce rozšířené matice soustavy.
- *
- * \param m Tmatice* Ukazatel na rozšířenou matici soustavy.
- */
 void gemZpetny(Tmatice *m)
 {
     // Procházej od posledního řádku k prvnímu
@@ -558,7 +552,7 @@ void gemZpetny(Tmatice *m)
         float suma = 0.0;
 
         // Procházej sloupce v aktuálním řádku, kromě posledního
-        for (int sloupec = radek + 1; sloupec < m->sloupcu - 1; ++sloupec) {
+        for (int sloupec = radek; sloupec < m->sloupcu - 1; ++sloupec) {
             // Odečti hodnoty neznámých násobené koeficienty z aktuálního řádku
             suma += m->prvek[radek][sloupec] * m->prvek[sloupec][m->radku];
         }
@@ -685,8 +679,8 @@ int main(void)
 
     // testMaxAbsPivot();
 
-    testPrimehoChodu("D.txt");          // otestuj i jiné soubory
-    testMaticePoPrimemChodu("D.txt");   // otestuj i jiné soubory
-    testZpetnyChod("D.txt");            // otestuj i jiné soubory
+    testPrimehoChodu("A.txt");          // otestuj i jiné soubory
+    testMaticePoPrimemChodu("A.txt");   // otestuj i jiné soubory
+    testZpetnyChod("A.txt");            // otestuj i jiné soubory
     return EXIT_SUCCESS;
 }
