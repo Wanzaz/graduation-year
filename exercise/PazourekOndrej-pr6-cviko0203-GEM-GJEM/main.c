@@ -552,7 +552,7 @@ void gemZpetny(Tmatice *m)
         float suma = 0.0;
 
         // Procházej sloupce v aktuálním řádku, kromě posledního
-        for (int sloupec = radek; sloupec < m->sloupcu - 1; ++sloupec) {
+        for (int sloupec = radek + 1; sloupec < m->sloupcu - 1; ++sloupec) {
             // Odečti hodnoty neznámých násobené koeficienty z aktuálního řádku
             suma += m->prvek[radek][sloupec] * m->prvek[sloupec][m->radku];
         }
