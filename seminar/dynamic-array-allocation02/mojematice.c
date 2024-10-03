@@ -24,10 +24,11 @@ Tmatice * novaMatice(uint radku, uint sloupcu)
 
     matice->prvek = malloc(radku * sizeof(float*));
 
-    for (uint r = 0; r < sloupcu; ++r) {
+    for (uint r = 0; r < radku; ++r) {
         matice->prvek[r] = malloc(sloupcu * sizeof(float));
 
         if (matice->prvek[r] == NULL) {
+            matice->radku = r;
             uvolniMatici(matice);
             return NULL;
         }
