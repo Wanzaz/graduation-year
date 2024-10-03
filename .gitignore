@@ -1,6 +1,7 @@
 **/.DS_Store
 **/build-*/
 **/*.pro.user
+**/*.pro
 
 # Prerequisites
 *.d

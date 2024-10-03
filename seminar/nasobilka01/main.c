@@ -4,7 +4,7 @@
  * Datum:
  */
 
-#include "gvid.h"       // par drobnosti pro zjednoduseni prace
+// #include "gvid.h"       // par drobnosti pro zjednoduseni prace
 #include <stdio.h>
 #include <stdlib.h>
 // #include <string.h>  // pro praci s textovymi retezci
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])  // pro parametry prikazoveho radku
 {
 
   if (argc < 3) {
-    fprintf(stderr, "Invalidni pocet argumentu\n\n"
+    fprintf(stderr, "Nespravny pocet argumentu\n\n"
                     "Napoveda jak spusti program s argumenty:\n"
                     "PREDPIS: nasobilka pocet zaklad\n"
                     "napr. nasobilka 3 2\n\n");
