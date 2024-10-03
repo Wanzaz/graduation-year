@@ -79,37 +79,41 @@ void tiskMatice(FILE *out, const Tmatice *m)
     }
 }
 
-/** \brief Nacteni matice ze souboru
+/** \brief Nacteni matice ze souboru, s podporou dynamicky alokovanych poli
  *
- * \param out FILE* Vstupni proud
+ * \param in FILE* Vstupni proud
  * \return Tmatice* Vraci ukazatel na matici nebo NULL
  *
  */
 Tmatice * nactiMatice(FILE *in)
 {
-    int radku, sloupcu;
-    if (fscanf(in, "%d %d", &radku, &sloupcu) != 2) {
-        return NULL;
-    }
-    if (radku <= 0 || sloupcu <= 0) {
+    int radku = 0, sloupcu = 0;
+
+    // Načtení počtu řádků a sloupců matice
+    if (fscanf(in, "%d %d", &radku, &sloupcu) != 2 || radku <= 0 || sloupcu <= 0) {
         return NULL;
     }
 
+    // Dynamická alokace nové matice
     Tmatice *m = novaMatice((uint)radku, (uint)sloupcu);
     if (m == NULL) {
         return NULL;
     }
 
-    for (uint r = 0; r < m->radku; ++r)
-    {
-        for (uint s = 0; s < m->sloupcu; ++s)
-        {
-            fscanf(in, "%f", &m->prvek[r][s]);
+    // Načtení hodnot prvků matice
+    for (uint r = 0; r < m->radku; ++r) {
+        for (uint s = 0; s < m->sloupcu; ++s) {
+            if (fscanf(in, "%f", &m->prvek[r][s]) != 1) {
+                // Pokud dojde k chybě při načítání, uvolníme paměť a vrátíme NULL
+                uvolniMatici(m);
+                return NULL;
+            }
         }
     }
 
     return m;
 }
+
 
 /** \brief Secteni vsech prvku dvou matic
  *
