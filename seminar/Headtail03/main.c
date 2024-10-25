@@ -26,6 +26,83 @@
           // Vypíše maximálně 5 prvních řádků vstupu: headtail.exe head 5 < vstupnidata.txt
           // Vypíše maximálně posledních 10 řádků vstupu: headtail.exe tail 10 < vstupnidata.txt
 
+// readline - alokovane pole
+// buffer - ukazatel radky, cyklicke pole
+
+
+#define CHUNK_SIZE 64
+
+char *readLine(FILE *f) {
+    size_t bufferSize = CHUNK_SIZE;
+    size_t length = 0;
+    char *buffer = malloc(bufferSize);
+
+    if (buffer == NULL) {
+        fprintf(stderr, "Alokacni error\n");
+        return NULL;
+    }
+
+    int c;
+    while ((c = fgetc(f)) != EOF) {
+        buffer[length++] = c;
+
+        if (c == '\n') {
+            break;
+        }
+
+        if (length == bufferSize) {
+            bufferSize += CHUNK_SIZE;
+            char *newBuffer = realloc(buffer, bufferSize);
+            if (newBuffer == NULL) {
+                free(buffer);
+                fprintf(stderr, "Realokacni error\n");
+                return NULL;
+            }
+            buffer = newBuffer;
+        }
+    }
+
+    if (length == 0 && c == EOF) {
+        free(buffer);
+        return NULL;
+    }
+
+    buffer[length] = '\0';
+    return buffer;
+}
+
+void tail(FILE *f, int pocet) {
+    char **lines = malloc(pocet * sizeof(char *));
+    if (!lines) {
+        fprintf(stderr, "Alokacni error\n");
+        return;
+    }
+
+    for (int i = 0; i < pocet; i++) {
+        lines[i] = NULL;
+    }
+
+    int lineIndex = 0;
+    char *line;
+    while ((line = readLine(f)) != NULL) {
+        if (lines[lineIndex]) {
+            free(lines[lineIndex]);
+        }
+        lines[lineIndex] = line;
+        lineIndex = (lineIndex + 1) % pocet;
+    }
+
+    for (int i = 0; i < pocet; i++) {
+        int idx = (lineIndex + i) % pocet;
+        if (lines[idx]) {
+            printf("%s", lines[idx]);
+            free(lines[idx]);
+        }
+    }
+
+    free(lines);
+}
+
 
 void head(FILE * f, int pocet)
 {
@@ -36,6 +113,26 @@ void head(FILE * f, int pocet)
             pocet--;
         }
     }
+}
+
+void headOrTail(FILE * f, char *akce, char* radku)
+{
+    char *ptr;
+    int pocet = strtol(radku, &ptr, 10);
+
+    if (*ptr != '\0') {
+        fprintf(stderr, "Invalid input.\n");
+    }
+
+
+    if (strcmp(akce, "head") == 0) {
+        head(f, pocet);
+    } else if (strcmp(akce, "tail") == 0) {
+        tail(f, pocet);
+    } else {
+        fprintf(stderr, "Spatny parametr na pozici head/tail, pokud nevis, jak ovladat program zadej parametr -h pro pomoc\n");
+    }
+
 }
 
 
@@ -68,14 +165,9 @@ int main(int argc, char *argv[])  // pro parametry prikazoveho radku
         printf("Chyba při otevírání souboru.\n");
         return 1;
     }
-    head(f, 10);
 
-    // pomoci -h pamateru - zapamatovat, kde lezi cislo....
+    headOrTail(f, argv[1], argv[2]);
 
-    int c;
-    while ((c = getchar()) != EOF) {
-        putchar(c);
-    }
 
     fclose(f);
 

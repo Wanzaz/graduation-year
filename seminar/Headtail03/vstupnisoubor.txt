@@ -18,3 +18,48 @@
 18 Każdy czekał na to, co nastąpi.
 19 W powietrzu unosiło się coś nieuchwytnego,
 20 jakby cały świat wstrzymał oddech na krótką chwilę.
+
+21 Na początku była cisza, a potem pojawił się delikatny szum.
+22 Szum ten stawał się coraz głośniejszy, aż w końcu przerodził się
+23 w donośny hałas, który wypełnił całe pomieszczenie.
+24 Ludzie zgromadzeni wokół nagle zamilkli, wstrzymując oddech.
+25 W samym centrum, w miejscu, gdzie jeszcze przed chwilą
+26 panowała pustka, zaczęło dziać się coś niezwykłego.
+27 Powietrze zdawało się drgać, jakby było przesycone energią.
+28 Wszystkie spojrzenia skierowały się w tamtym kierunku,
+29 nikt nie miał odwagi odezwać się ani wykonać najmniejszego ruchu.
+30 Coś niewidzialnego, niemal magicznego, rozprzestrzeniało się
+31 po całym pokoju, pochłaniając uwagę każdego obecnego.
+32 Wydawało się, że czas stanął w miejscu.
+33 Minuty mijały, choć nikt ich nie liczył.
+34 Jedynie ciche oddechy świadczyły o tym, że ludzie wciąż byli tam,
+35 obecni, uwięzieni w tym niesamowitym momencie.
+36 Czy to początek czegoś nowego, czy może finał długiej podróży?
+37 Nikt nie znał odpowiedzi.
+38 Każdy czekał na to, co nastąpi.
+39 W powietrzu unosiło się coś nieuchwytnego,
+40 jakby cały świat wstrzymał oddech na krótką chwilę.
+
+...
+
+980 Na początku była cisza, a potem pojawił się delikatny szum.
+981 Szum ten stawał się coraz głośniejszy, aż w końcu przerodził się
+982 w donośny hałas, który wypełnił całe pomieszczenie.
+983 Ludzie zgromadzeni wokół nagle zamilkli, wstrzymując oddech.
+984 W samym centrum, w miejscu, gdzie jeszcze przed chwilą
+985 panowała pustka, zaczęło dziać się coś niezwykłego.
+986 Powietrze zdawało się drgać, jakby było przesycone energią.
+987 Wszystkie spojrzenia skierowały się w tamtym kierunku,
+988 nikt nie miał odwagi odezwać się ani wykonać najmniejszego ruchu.
+989 Coś niewidzialnego, niemal magicznego, rozprzestrzeniało się
+990 po całym pokoju, pochłaniając uwagę każdego obecnego.
+991 Wydawało się, że czas stanął w miejscu.
+992 Minuty mijały, choć nikt ich nie liczył.
+993 Jedynie ciche oddechy świadczyły o tym, że ludzie wciąż byli tam,
+994 obecni, uwięzieni w tym niesamowitym momencie.
+995 Czy to początek czegoś nowego, czy może finał długiej podróży?
+996 Nikt nie znał odpowiedzi.
+997 Każdy czekał na to, co nastąpi.
+998 W powietrzu unosiło się coś nieuchwytnego,
+999 jakby cały świat wstrzymał oddech na krótką chwilę.
+1000 Na początku była cisza, a potem pojawił się delikatny szum.
