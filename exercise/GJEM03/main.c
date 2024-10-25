@@ -242,6 +242,33 @@ bool jeHorni(Tmatice *m)
     return true;
 }
 
+
+/** \brief vraci jestli je matice upravena funkci GJEM == je nulova krome diagonaly
+ *
+ * \param Tmatrix *m
+ * \return true false
+ *
+ */
+bool jePoGJEM(Tmatice *m)
+{
+    for(int r = 0; r < m->radku; r++)
+    {
+        if (m->prvek[r][r] == 0.0) return false;
+
+        for(int s = 0 ; s < m->sloupcu - 1; s++)
+        {
+            if(r !=s && m->prvek[r][s] != 0.0)
+            {
+                return false;
+            }
+
+        }
+    }
+
+    return true;
+}
+
+
 /** \brief Provadi radkove upravy v matici
  *
  * \param m Tmatice* Ukazatel na alokovanou matici.
@@ -260,7 +287,6 @@ void radkoveUpravy(Tmatice *m, int r)
         }
     }
 }
-
 
 
 /** \brief Provede přímý chod GEM.
@@ -301,31 +327,6 @@ int gemPrimy(Tmatice *m)
  * \param r int Index řádku, na kterém proběhne úprava (pivot).
  * \return void
  */
-void radkoveUpravyNad(Tmatice *m, int r)
-{
-    for (int radek = 0; radek < r; ++radek) { // Pro každý řádek nad aktuálním (pivot)
-        float koef = m->prvek[radek][r] / m->prvek[r][r]; // Vypočteme koeficient
-        for (int s = 0; s < m->sloupcu; ++s) {
-            m->prvek[radek][s] -= koef * m->prvek[r][s]; // Zrušíme prvek nad
-        }
-    }
-}
-
-void kombinace(Tmatice* m, int r, int k, float c)
-{
-    for (int i = r; i < m->sloupcu; i++) {
-        m->prvek[k][i] = m->prvek[r][i] * c - m->prvek[k][i];
-    }
-}
-
-void radkoveUpravyNahoru(Tmatice* m, int r)
-{
-    for (int k = r - 1; k >= 0; k--) {
-        float c = m->prvek[k][r] / m->prvek[r][r];
-        kombinace(m, r, k, c);
-    }
-}
-
 void radkoveUpravyJordan(Tmatice *m, int r)
 {
     // Jeden for cyklus pro úpravu všech řádků nad i pod r-tým řádkem
@@ -387,11 +388,7 @@ int gjemPrimy(Tmatice *m)
             maticeVymenRadky(m, pivot, r);
         }
 
-        // radkoveUpravy(m, r);
-        // radkoveUpravyNahoru(m, r);
         radkoveUpravyJordan(m, r);
-        maticeTiskni(m);
-
     }
     return OK;
 }
@@ -407,54 +404,43 @@ int gjemPrimy(Tmatice *m)
  * 2. Na duplikátu vstupní matice proveď přímý chod GJEM a vytiskni výsledek.
  * 3. Ukliď po sobě.
  */
-
 void testPrimehoChodu(char *jmenoSouboru)
 {
-    printf("==========================================\n");
-    printf("Test přímého chodu GEM\n");
+    printf("==========================================\nTest přímého chodu GJEM a GEM\n==========================================\n");
 
-    // Načtení matice ze souboru
-    FILE *fin = fopen(jmenoSouboru, "r");
-    if (fin == NULL) {
-        fprintf(stderr, "Chyba: Nelze otevřít soubor %s.\n", jmenoSouboru);
+    FILE *f = fopen(jmenoSouboru, "r");
+    if (!f) {
+        fprintf(stderr, "Chyba: Soubor se nepodařilo otevřít.\n");
         return;
     }
 
-    // Načtení matice ze souboru
-    Tmatice *m = maticeCtiZeSouboru(fin); // Funkce vrací ukazatel na matici
-    fclose(fin);
-
-    // Zkontrolujeme, zda byla matice správně načtena
-    if (m == NULL) {
-        fprintf(stderr, "Chyba při čtení matice ze souboru.\n");
+    Tmatice *m = maticeCtiZeSouboru(f);
+    fclose(f);
+    if (!m) {
+        fprintf(stderr, "Chyba: Nepodařilo se načíst matici.\n");
         return;
     }
 
-    // Vytiskneme původní matici
-    printf("Původní matice:\n");
+    Tmatice *m2 = maticeDuplikat(m);
+    if (!m2) {
+        fprintf(stderr, "Chyba: Nepodařilo se vytvořit duplikát matice.\n");
+        maticeUvolni(m);
+        return;
+    }
+
+    if (gjemPrimy(m) == CHYBA_RESENI) printf("Chyba: GJEM - Matice nemá řešení.\n");
+    if (gemPrimy(m2) == CHYBA_RESENI) printf("Chyba: GEM - Matice nemá řešení.\n");
+
+    printf("Původní matice po GJEM:\n");
     maticeTiskni(m);
+    printf("================================================\nDuplikát matice po GEM:\n");
+    maticeTiskni(m2);
 
-    // Provedeme přímý chod GEM na původní matici
-    printf("Matice po přímém chodu GEM:\n");
-    if (gemPrimy(m) == CHYBA_RESENI) {
-        printf("Chyba: Matice má 0 na diagonále, nelze provést GEM.\n");
-    } else {
-        maticeTiskni(m); // Vytiskneme matici po přímém chodu
-    }
-
-    printf("Test přímého chodu GJEM\n");
-    printf("Matice po přímém chodu GJEM:\n");
-    if (gjemPrimy(m) == CHYBA_RESENI) {
-        printf("Chyba: Matice má 0 na diagonále, nelze provést GJEM.\n");
-    } else {
-        maticeTiskni(m); // Vytiskneme matici po přímém chodu
-    }
-
-    // Uvolníme alokovanou paměť
     maticeUvolni(m);
-
+    maticeUvolni(m2);
     printf("==========================================\n");
 }
+
 
 
 /** \brief Vrací počet řešení upravené soustavy po provedení přímého chodu GEM.
@@ -516,96 +502,67 @@ int gemGjemPoPrimem(Tmatice *m)
 void testMaticePoPrimemChodu(char *jmenoSouboru)
 {
     printf("==========================================\n");
-    printf("Testování matice po přímém chodu...\n");
-
-    // Krok 1: Otevření souboru pro čtení
-    FILE *file = fopen(jmenoSouboru, "r");
-    if (file == NULL) {
-        printf("Chyba při otevírání souboru.\n");
-        return;
-    }
-
-    // Krok 2: Načtení matice ze souboru
-    Tmatice *matice = maticeCtiZeSouboru(file);
-    fclose(file); // Zavření souboru po načtení
-    if (matice == NULL) {
-        printf("Chyba při načítání matice ze souboru.\n");
-        return;
-    }
-
-    // Krok 3: Otestuj, zda je matice ve tvaru horní trojúhelníkové matice
-    if (jeHorni(matice)) {
-        printf("Matice je ve tvaru horní trojúhelníkové matice.\n");
-    } else {
-        printf("Matice není ve tvaru horní trojúhelníkové matice. Provedu přímý chod GEM...\n");
-
-        // Krok 4: Provedení přímého chodu GEM
-        if (gemPrimy(matice) == CHYBA_RESENI) {
-            printf("Chyba při provádění přímého chodu GEM.\n");
-            maticeUvolni(matice); // Uvolnění paměti v případě chyby
-            return;
-        }
-
-        // Otestuj znovu, zda je matice nyní ve tvaru horní trojúhelníkové matice
-        if (jeHorni(matice)) {
-            printf("Matice je nyní ve tvaru horní trojúhelníkové matice.\n");
-        } else {
-            printf("Matice stále není ve tvaru horní trojúhelníkové matice.\n");
-            maticeUvolni(matice); // Uvolnění paměti v případě neúspěchu
-            return;
-        }
-    }
-
-    // Krok 5: Zhodnocení počtu řešení soustavy po přímém chodu
-    int pocetReseni = gemGjemPoPrimem(matice); // Funkce pro určení počtu řešení
-    if (pocetReseni == 1) {
-        printf("Soustava má jedno řešení.\n");
-    } else if (pocetReseni == 0) {
-        printf("Soustava nemá žádné řešení.\n");
-    } else if (pocetReseni == -1) {
-        printf("Soustava má nekonečně mnoho řešení.\n");
-    }
-
-    // Krok 1: Otevření souboru pro čtení
-    FILE *file2 = fopen(jmenoSouboru, "r");
-    if (file2 == NULL) {
-        printf("Chyba při otevírání souboru.\n");
-        return;
-    }
-
-    // Krok 2: Načtení matice ze souboru
-    Tmatice *matice2 = maticeCtiZeSouboru(file);
-    fclose(file2); // Zavření souboru po načtení
-    if (matice2 == NULL) {
-        printf("Chyba při načítání matice ze souboru.\n");
-        return;
-    }
-
-    // Krok 6: Provedení Gauss-Jordanovy eliminační metody (GJEM)
-    printf("Provádím Gauss-Jordanovu eliminační metodu...\n");
-    if (gjemPrimy(matice2) == CHYBA_RESENI) {
-        printf("Chyba při provádění Gauss-Jordanovy eliminační metody.\n");
-        maticeUvolni(matice2); // Uvolnění paměti v případě chyby
-        return;
-    }
-
-    // Krok 7: Zhodnocení počtu řešení po GJEM
-    pocetReseni = gemGjemPoPrimem(matice2);
-    if (pocetReseni == 1) {
-        printf("Soustava má jedno řešení po GJEM.\n");
-    } else if (pocetReseni == 0) {
-        printf("Soustava nemá žádné řešení po GJEM.\n");
-    } else if (pocetReseni == -1) {
-        printf("Soustava má nekonečně mnoho řešení po GJEM.\n");
-    }
-
-    // Krok 8: Uvolnění paměti pro matici
-    maticeUvolni(matice); // Správná funkce pro uvolnění matice
-    maticeUvolni(matice2); // Správná funkce pro uvolnění matice
+    printf("Test matice po přímém chodu\n");
     printf("==========================================\n");
+
+    FILE *f = fopen(jmenoSouboru, "r");
+    if (f == NULL) {
+        printf("Soubor se nepodařilo otevřít.\n");
+        return;
+    }
+
+    Tmatice *m = maticeCtiZeSouboru(f);
+    fclose(f);
+    if (m == NULL) {
+        printf("Nepovedlo se načíst matici.\n");
+        return;
+    }
+
+    if (!jePoGJEM(m)) {
+        maticeTiskni(m);
+        printf("\nMatice není upravena na požadovaný tvar.\n");
+        printf("Probíhá GJEM...\n\n");
+        if (gjemPrimy(m) == -1) {
+            printf("\nNelze upravit tuto matici.\n");
+            maticeUvolni(m);
+            return;
+        }
+    }
+
+    maticeTiskni(m);
+
+    // Testování počtu řešení po GEM
+    if (jePoGJEM(m)) {
+        printf("\nTvar matice odpovídá tvaru po provedení přímého chodu GJEM.\n");
+
+        // Testování počtu řešení GEM
+        int reseniGEM = gemGjemPoPrimem(m);
+        if (reseniGEM == -1) {
+            printf("\nMatice má nekonečno řešení.\n");
+        } else {
+            printf("\nMatice má %d řešení (GJEM).\n", reseniGEM);
+        }
+    } else {
+        printf("Chyba: Matice není ve správném tvaru po GJEM.\n");
+    }
+
+    // Zde se přidá testování počtu řešení po GEM
+    printf("\nProvádím přímý chod GEM...\n");
+    Tmatice *m2 = maticeDuplikat(m); // Vytvoření duplikátu pro GEM
+    if (gemPrimy(m2) == -1) {
+        printf("\nMatice má nekonečno řešení (GEM).\n");
+    } else {
+        int reseniGEM = gemGjemPoPrimem(m2);
+        printf("\nMatice má %d řešení (GEM).\n", reseniGEM);
+    }
+
+    // Vytisknutí matice po GEM
+    printf("\nMatice po GEM:\n");
+    maticeTiskni(m2);
+
+    maticeUvolni(m);
+    maticeUvolni(m2);
 }
-
-
 
 
 /** \brief Provede zpětný chod GEM.
@@ -631,6 +588,7 @@ void gemZpetny(Tmatice *m)
         m->prvek[radek][m->sloupcu - 1] = (m->prvek[radek][m->radku] - suma) / m->prvek[radek][radek];
     }
 }
+
 
 /** \brief Provede zpětný chod GJEM.
  *
@@ -659,6 +617,7 @@ void tiskReseni(Tmatice *m)
   }
 }
 
+
 /** \brief Vyřeší upravenou soustavu rovnic.
  *
  * Zadání:
@@ -672,70 +631,76 @@ void tiskReseni(Tmatice *m)
 void testZpetnyChod(char *jmenoSouboru)
 {
     printf("==========================================\n");
+    printf("Test zpětného chodu GJEM a GEM na matici\n");
+    printf("==========================================\n");
 
-    // Krok 1: Otevření souboru pro čtení
-    FILE *file = fopen(jmenoSouboru, "r");
-    if (file == NULL) {
-        printf("Chyba při otevírání souboru.\n");
+    // Test pro GJEM
+    FILE *f = fopen(jmenoSouboru, "r");
+    if (f == NULL) {
+        printf("Soubor se nepodařilo otevřít.\n");
         return;
     }
-
-    // Krok 2: Načtení matice ze souboru
-    Tmatice *matice = maticeCtiZeSouboru(file);
-    fclose(file); // Zavření souboru po načtení
-    if (matice == NULL) { // Zkontrolujeme, zda načtení proběhlo úspěšně
-        printf("Chyba při načítání matice ze souboru.\n");
+    Tmatice *m = maticeCtiZeSouboru(f);
+    fclose(f);
+    if (m == NULL) {
+        printf("\nNepovedlo se načíst matici.\n");
         return;
     }
-
-    // Krok 3: Uprav matici do požadovaného tvaru pro zpětný chod
-    printf("Provádím přímý chod GEM...\n");
-    gemPrimy(matice); // Provede GEM přímý chod (Gaussova eliminace)
-
-    // Krok 4: Otestuj, zda je matice v horním trojúhelníkovém tvaru
-    if (!jeHorni(matice)) {
-        printf("Matice není ve tvaru horní trojúhelníkové matice. Nemá jednoznačné řešení.\n");
-        maticeUvolni(matice); // Uvolníme matici v případě chyby
-        return;
+    maticeTiskni(m);
+    if (!jePoGJEM(m)) {
+        printf("\nProbíhá GJEM...\n\n");
+        gjemPrimy(m);
+        maticeTiskni(m);
     }
 
-    // Krok 5: Provedení zpětného chodu GEM pro řešení soustavy
-    printf("Provádím zpětný chod GEM...\n");
-    gemZpetny(matice); // Řeší soustavu po přímém chodu
-
-    // Krok 6: Vypiš řešení soustavy
-    printf("Řešení soustavy:\n");
-    tiskReseni(matice); // Výpis výsledného řešení
-
-    // Krok 1: Otevření souboru pro čtení
-    FILE *file2 = fopen(jmenoSouboru, "r");
-    if (file == NULL) {
-        printf("Chyba při otevírání souboru.\n");
-        return;
+    int pocetReseniGJEM = gemGjemPoPrimem(m);
+    if (pocetReseniGJEM == 1) {
+        gjemZpetny(m);
+        tiskReseni(m);
+    } else if (pocetReseniGJEM == 0) {
+        printf("\nMatice nemá žádné řešení (GJEM).\n");
+    } else {
+        printf("\nMatice má nekonečno řešení (GJEM).\n");
     }
 
-    // Krok 2: Načtení matice ze souboru
-    Tmatice *matice2 = maticeCtiZeSouboru(file);
-    fclose(file2); // Zavření souboru po načtení
-    if (matice2 == NULL) { // Zkontrolujeme, zda načtení proběhlo úspěšně
-        printf("Chyba při načítání matice ze souboru.\n");
+    maticeUvolni(m);
+
+    // Test pro GEM
+    printf("==========================================\n");
+    printf("Test zpětného chodu GEM na matici\n");
+    printf("==========================================\n");
+
+    f = fopen(jmenoSouboru, "r");
+    if (f == NULL) {
+        printf("Soubor se nepodařilo otevřít.\n");
         return;
     }
+    Tmatice *m2 = maticeCtiZeSouboru(f);
+    fclose(f);
+    if (m2 == NULL) {
+        printf("\nNepovedlo se načíst matici.\n");
+        return;
+    }
+    maticeTiskni(m2);
+    if (!jeHorni(m2)) {
+        printf("\nProbíhá GEM...\n\n");
+        gemPrimy(m2);
+        maticeTiskni(m2);
+    }
 
+    int pocetReseniGEM = gemGjemPoPrimem(m2);
+    if (pocetReseniGEM == 1) {
+        gemZpetny(m2);
+        tiskReseni(m2);
+    } else if (pocetReseniGEM == 0) {
+        printf("\nMatice nemá žádné řešení (GEM).\n");
+    } else {
+        printf("\nMatice má nekonečno řešení (GEM).\n");
+    }
 
-    printf("Provádím zpětný chod GJEM...\n");
-    gjemZpetny(matice2); // Řeší soustavu po přímém chodu
-
-    printf("Řešení soustavy:\n");
-    tiskReseni(matice2); // Výpis výsledného řešení
-
-    maticeUvolni(matice);
-    maticeUvolni(matice2);
+    maticeUvolni(m2);
     printf("==========================================\n");
 }
-
-
-
 
 
 
@@ -743,16 +708,13 @@ void testZpetnyChod(char *jmenoSouboru)
 /** Startovní bod programu. */
 int main(void)
 {
-  // Co nepotřebuješ, si můžeš zakomentovat.
-
   // srand(time(NULL));
-
   // testInit();
   // testFileRW("A.txt", NULL); // NULL -> bude zapisovat na stdout
   // testMult();
 
-  testPrimehoChodu("A.txt");          // otestuj i jiné soubory
-  testMaticePoPrimemChodu("A.txt");   // otestuj i jiné soubory
-  testZpetnyChod("A.txt");            // otestuj i jiné soubory
+  testPrimehoChodu("A.txt");
+  testMaticePoPrimemChodu("A.txt");
+  testZpetnyChod("A.txt");
   return EXIT_SUCCESS;
 }
