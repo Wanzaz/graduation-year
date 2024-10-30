@@ -330,17 +330,17 @@ int gemPrimy(Tmatice *m)
 void radkoveUpravyJordan(Tmatice *m, int r)
 {
     // Jeden for cyklus pro úpravu všech řádků nad i pod r-tým řádkem
-    for (int i = 0; i < m->radku; i++) {
-        if (i == r) { // Přeskočíme úpravu diagonálního řádku
+    for (int radek = 0; radek < m->radku; radek++) {
+        if (radek == r) { // Přeskočíme úpravu diagonálního řádku
             continue;
         }
 
-        float konstanta = m->prvek[i][r] / m->prvek[r][r];
-        m->prvek[i][r] = 0.0; // Nastavíme nulu v aktuálním sloupci
+        float konstanta = m->prvek[radek][r] / m->prvek[r][r];
+        m->prvek[radek][r] = 0.0; // Nastavíme nulu v aktuálním sloupci
 
         // Druhý for cyklus pro úpravu všech sloupců
         for (int s = r + 1; s < m->sloupcu; s++) {
-            m->prvek[i][s] -= konstanta * m->prvek[r][s];
+            m->prvek[radek][s] = m->prvek[radek][s] - konstanta * m->prvek[r][s];
         }
     }
 }
@@ -359,7 +359,7 @@ void radkoveUpravyJordan2(Tmatice *m,int r)
     for(int k =r-1;  k >=0; k--){
         float c = m->prvek[k][r] / m->prvek[r][r];
         for(int s = r; s< m->sloupcu; s++){
-            m->prvek[k][s] = m->prvek[k][s]-c*m->prvek[r][s];
+            m->prvek[k][s] = m->prvek[k][s] - c * m->prvek[r][s];
         }
         m->prvek[k][r] = 0;
     }
