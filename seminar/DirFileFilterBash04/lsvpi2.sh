@@ -4,23 +4,17 @@ HIDDEN=false
 INTERACTIVE=false
 MODE=""
 
-list_files() {
-    echo "Seznam souborů:"
-    for item in *; do
-        [ -f "$item" ] && echo "$item"
-    done
-    $HIDDEN && for item in .?*; do
-        [ -f "$item" ] && echo "$item"
-    done
-}
+list_items() {
+    local type=$1
 
-list_dirs() {
-    echo "Seznam adresářů:"
-    for item in *; do
-        [ -d "$item" ] && echo "$item"
-    done
-    $HIDDEN && for item in .?*; do
-        [ -d "$item" ] && echo "$item"
+    for item in * .?*; do # zahrnuje vsechny soubory a adresare i skryte (? je wild card - 1 jakkykoliv znak)
+        if [ "${item:0:1}" != "." ] || $HIDDEN; then
+            if [ "$type" == "file" ] && [ -f "$item" ]; then
+                echo "$item"
+            elif [ "$type" == "dir" ] && [ -d "$item" ]; then
+                echo "$item"
+            fi
+        fi
     done
 }
 
@@ -37,8 +31,8 @@ interactive_mode() {
     PS3="Zadejte číslo volby: "
     select choice in "Zobrazit soubory" "Zobrazit adresáře" "Zobrazit nápovědu" "Konec"; do
         case $choice in
-            "Zobrazit soubory") list_files ;;
-            "Zobrazit adresáře") list_dirs ;;
+            "Zobrazit soubory") list_items "file" ;;
+            "Zobrazit adresáře") list_items "dir" ;;
             "Zobrazit nápovědu") print_help ;;
             "Konec") echo "Konec"; exit 0 ;;
             *) echo "Neplatná volba" ;;
@@ -63,8 +57,13 @@ process_params() {
 process_params "$@"
 
 $INTERACTIVE && interactive_mode || {
-    [ "$MODE" == "files" ] && list_files
-    [ "$MODE" == "dirs" ] && list_dirs
-    { [ -z "$MODE" ] && echo "Vyberte režim s parametry -f nebo -d." && exit 1; }
+    if [ "$MODE" == "files" ]; then
+        list_items "file"
+    elif [ "$MODE" == "dirs" ]; then
+        list_items "dir"
+    else
+        echo "Vyberte režim s parametry -f nebo -d."
+        exit 1
+    fi
 }
 
