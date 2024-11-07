@@ -192,7 +192,7 @@ void testMult(void)
 int maxAbsPivot(Tmatice *m, int r)
 {
     int maxi = r;
-    for (int radek = r + 1; radek < m->radku - 1; ++radek) {
+    for (int radek = r + 1; radek <= m->radku - 1; ++radek) {
         if (fabs(m->prvek[radek][r]) > fabs(m->prvek[maxi][r])) {
             maxi = radek;
         }
@@ -277,7 +277,7 @@ void radkoveUpravy(Tmatice *m, int r)
 
         // Úprava zbývajících sloupců
         for (int sloupec = r + 1; sloupec < m->sloupcu; ++sloupec) {
-            m->prvek[radek][sloupec] -= m->prvek[r][sloupec] * koeficient;
+            m->prvek[radek][sloupec] = m->prvek[r][sloupec] * koeficient - m->prvek[radek][sloupec];
         }
     }
 }
@@ -306,10 +306,7 @@ int gemPrimy(Tmatice *m)
         if (radek != p) { // aby se neměnily stejné řádky..
             maticeVymenRadky(m, radek, p);
         }
-        // Vypisování matice po každé výměně
-        maticeTiskni(m); // SMAZAT PO TESTOVANI
 
-        // Provádění řádkových úprav pomocí funkce radkoveUpravy
         radkoveUpravy(m, radek);
     }
 
