@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Napiš skript lsvpi.sh, který bude rozumět tomuto seznamu parametrů
+
+# lsvpi.sh -f | -d [-h | --help] [--hidden] [-i | --interactive]
+
+# -f - Vypíše seznam souborů aktuálního adresáře.
+# -d - Vypíše seznam podadresářů aktuálního adresáře.
+# -h, --help - (nepovinný pro uživatele) Zobrazí nápovědu.
+# --hidden - (nepovinný pro uživatele) Vypíše i skryté soubory nebo adresáře.
+# -i, --interactive - (nepovinný pro uživatele) Zobrazí nabídkové menu, které uživateli nabídne všechny výše popsané možnosti.
+
+# Nesmíš použít příkazy jako ls nebo dir.
+# Parametry by mělo jít zadat v libovolném pořadí a v libovolné kombinaci.
+# Používej podprogramy. Program by neměl obsahovat více než tři cykly (parametry, menu a průchod seznamem souborů).
+
 HIDDEN=false
 INTERACTIVE=false
 MODE=""
