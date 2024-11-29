@@ -22,5 +22,18 @@ sed -e '1i\
     -e 's/,/<\/td><td>/g' \
     "$input_file" > "$output_file"
 
-echo "HTML soubor byl úspěšně vygenerován jako $output_file."
+# & - vklada puvodni text, ktery odpovidal vzoru
+# d - odstraneni
+# 1i - pridani textu pred prvni radek
+# s - nahrazeni (pri pouziti g na konci, tak je to global vsude)
+# '2,4d' - smazani rozmezi 2 az 4 radku
+# -e - expression - pro vice regularnich vyrazu
+# .* - libovolny znak na od zacatku radku za do konce
+# -e '/!table/s/.*/<table border="1">/' - omezeni dane, ze radek musi zacinat !table, jinak by se to aplikovalo uplne vsude...
+#
+# \([^,]*\) - zachyceni sloupce s oddelovacem carky --> rovna se pak 1/ (pripadne 2/, 3/, ...)
+# [^,]* - vsechno krome carek
+
+
+echo "HTML done $output_file."
 
