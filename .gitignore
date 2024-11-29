@@ -2,6 +2,9 @@
 **/build-*/
 **/*.pro.user
 **/*.pro
+**/.qmake.stash
+**/.qtc_clangd
+**/Makefile
 
 # Prerequisites
 *.d
