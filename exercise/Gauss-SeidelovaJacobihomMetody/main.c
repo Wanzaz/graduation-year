@@ -70,52 +70,109 @@ void nulovaniDiagonaly(Tmatice *m)
 }
 
 
-void gaussSeidlova(Tmatice *m, float eps, Tmatice *x)
+void gaussSeidlova(Tmatice *m, float eps, Tmatice *x) // x muze byt i jen 1D pole a nemusi byt zbytecne 2D pole
 {
     bool jePresny = false; // na zacatku zaciname pesimisticky
     float xpred = 0.0;
     float sum = 0.0;
 
-    nulovaniDiagonaly(m);
-
-    while(!jePresny) {
+    while (!jePresny) {
         jePresny = true; // na zacatku kazde iterace - nastavit optimisticky
-        for (int r = 0; r < m->radku; ++r) {
+        for (int r = 0; r < m->radku; ++r) { // kazdy radek matice -> pocitame Xr
             xpred = x->prvek[r][0];
 
-            for (int s = 0; s < m->sloupcu; ++s) {
-                sum += m->prvek[r][s] * x->prvek[s][0];
+            for (int s = 0; s < m->sloupcu - 1; ++s) {
+                sum += m->prvek[r][s] * x->prvek[s][0]; // používají staré hodnoty x pro všechny prvky x, kromě aktuálního řádku r
             }
 
             x->prvek[r][0] = m->prvek[r][m->sloupcu - 1] - sum; // nova hodnota podle vzorce
 
             sum = 0.0;
-            jePresny = jePresny && fabs(xpred - x->prvek[r][0]) < eps;
+            jePresny = jePresny && fabs(x->prvek[r][0] - xpred) < eps;
         }
     }
 }
 
-void jacobiho(Tmatice *m, float eps, float *x)
+void jacobiho(Tmatice *m, float eps, Tmatice *xnovy)
 {
+    Tmatice *xpred = maticeAlokuj(m->radku, 1); // 1D pole
+    if (xpred == NULL) {
+        printf("\nChyba pri alokaci pomocne matice.\n");
+        return;
+    }
 
-}
+    bool jePresny = false; // na zacatku zaciname pesimisticky
+    float sum = 0.0;
 
-void testJ(void)
-{
+    while (!jePresny){ // stejne jako gs metoda
+        jePresny = true;
 
+        for (int r = 0; r < m->radku; ++r){
+            for (int s = 0; s < m->sloupcu - 1; ++s){
+                sum += m->prvek[r][s] * xpred->prvek[s][0];
+            }
+
+            xnovy->prvek[r][0] = m->prvek[r][m->sloupcu - 1] - sum; // priradit novou hodnotu podle vzorce
+            sum = 0.0;
+
+            jePresny = jePresny && fabs(xnovy->prvek[r][0] - xpred->prvek[r][0]) < eps;
+        }
+
+        for (int r = 0; r < m->radku; r++){
+            xpred->prvek[r][0] = xnovy->prvek[r][0]; // Po kazde iteraci prepisovani predchozich vysledku novymi
+        }
+    }
+
+    maticeUvolni(xpred);
 }
 
 void tiskReseni(Tmatice *m)
 {
     for(int r = 0; r < m->radku; r++){
-        printf("x%d = %7.7f\n", r, m->prvek[r][0]);
+        printf("x%d = %.7f\n", r, m->prvek[r][0]);
     }
 }
 
-void clearbuffer()
+
+void testJ(char * adresaSouboru, float eps)
 {
-    while(getchar()!='\n');
+    printf("------ Jacobiho metoda ------\n");
+    FILE* f = fopen(adresaSouboru,"r");
+    if(f == NULL){
+        printf("\nChyba pri otevirani souboru.\n");
+        return;
+    }
+
+    Tmatice *m = maticeCtiZeSouboru(f);
+    fclose(f);
+
+    if(m == NULL){
+        printf("\nChyba pri alokaci matice.\n");
+        return;
+    }
+
+    Tmatice * x = maticeAlokuj(m->radku,1);
+    if(x == NULL){
+        printf("\nChyba pri alokaci vysledkove matice.\n");
+        return;
+    }
+
+    maticeTiskni(m);
+
+    if(!jeDDM(m)){
+        printf("\nMatice neni DDM.\n");
+        return;
+    }
+
+    upravaMatice(m);
+    nulovaniDiagonaly(m);
+    jacobiho(m, eps, x);
+
+    tiskReseni(x);
+    maticeUvolni(x);
+    maticeUvolni(m);
 }
+
 
 void testGS(char * adresaSouboru, float eps)
 {
@@ -148,6 +205,7 @@ void testGS(char * adresaSouboru, float eps)
     }
 
     upravaMatice(m);
+    nulovaniDiagonaly(m);
     gaussSeidlova(m, eps, x);
 
     tiskReseni(x);
@@ -188,6 +246,8 @@ int main(void)
     float eps = 0.001;
     // testDDM("B.txt");
     testGS("A.txt", eps);
+    printf("\n====================================================\n\n");
+    testJ("A.txt", eps);
 
     return EXIT_SUCCESS;
 }
