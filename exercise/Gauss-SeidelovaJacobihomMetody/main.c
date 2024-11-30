@@ -24,11 +24,6 @@
 #include "gvid.h"
 #include "matice.h"
 
-enum gemErrors {
-    OK,          /**< Kód pro stav bez chyby. */
-    CHYBA_RESENI,      /**< Kód chyby kdyz na diagonale je 0.  */
-};
-
 
 bool jeDDM(Tmatice *m)
 {
@@ -93,10 +88,10 @@ void gaussSeidlova(Tmatice *m, float eps, Tmatice *x) // x muze byt i jen 1D pol
     }
 }
 
-void jacobiho(Tmatice *m, float eps, Tmatice *xnovy)
+void jacobiho(Tmatice *m, float eps, Tmatice *xpred)
 {
-    Tmatice *xpred = maticeAlokuj(m->radku, 1); // 1D pole
-    if (xpred == NULL) {
+    Tmatice *xnovy = maticeAlokuj(m->radku, 1); // 1D pole
+    if (xnovy == NULL) {
         printf("\nChyba pri alokaci pomocne matice.\n");
         return;
     }
@@ -123,7 +118,7 @@ void jacobiho(Tmatice *m, float eps, Tmatice *xnovy)
         }
     }
 
-    maticeUvolni(xpred);
+    maticeUvolni(xnovy);
 }
 
 void tiskReseni(Tmatice *m)
@@ -151,11 +146,12 @@ void testJ(char * adresaSouboru, float eps)
         return;
     }
 
-    Tmatice * x = maticeAlokuj(m->radku,1);
+    Tmatice * x = maticeAlokuj(m->radku, 1);
     if(x == NULL){
         printf("\nChyba pri alokaci vysledkove matice.\n");
         return;
     }
+    inicializujMatici(x, 0.0);
 
     maticeTiskni(m);
 
@@ -191,11 +187,12 @@ void testGS(char * adresaSouboru, float eps)
         return;
     }
 
-    Tmatice * x = maticeAlokuj(m->radku,1);
+    Tmatice * x = maticeAlokuj(m->radku, 1);
     if(x == NULL){
         printf("\nChyba pri alokaci vysledkove matice.\n");
         return;
     }
+    inicializujMatici(x, 0.0);
 
     maticeTiskni(m);
 
@@ -240,7 +237,6 @@ void testDDM(char *adresaSouboru)
 }
 
 
-// TODO: Matice, ktera neni DDM - C.txt maticeC.txt
 int main(void)
 {
     float eps = 0.001;

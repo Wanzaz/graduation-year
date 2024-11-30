@@ -133,6 +133,22 @@ void maticeRandom(Tmatice *matice)
   _chybovyStav = EMOK;
 }
 
+/** \brief Inicializuje danou matici na konkrétní hodnotu */
+void inicializujMatici(Tmatice *matice, float hodnota) {
+    if (matice == NULL) {
+        printf("Chyba: Matice je NULL.\n");
+        return;
+    }
+
+    for (int r = 0; r < matice->radku; ++r) {
+        for (int s = 0; s < matice->sloupcu; ++s) {
+            matice->prvek[r][s] = hodnota;
+        }
+    }
+    _chybovyStav = EMOK;
+}
+
+
 
 
 

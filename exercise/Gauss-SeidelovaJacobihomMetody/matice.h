@@ -102,6 +102,19 @@ Tmatice * maticeDuplikat(const Tmatice *zdroj);
 void maticeRandom(Tmatice *matice);
 
 
+/** \brief Inicializuje všechny prvky matice na zadanou hodnotu.
+ *
+ * \param matice Tmatice* Ukazatel na alokovanou matici.
+ * \param hodnota float Hodnota, na kterou budou všechny prvky matice nastaveny.
+ *
+ * <p>Inicializovaná matice již musí být vytvořena pomocí maticeAlokuj. Při
+ * pokusu o inicializaci matice, která nebyla řádně vytvořena, může dojít
+ * k havárii. Tato funkce je užitečná například při přípravě vstupních dat
+ * pro numerické metody nebo při resetování hodnot matice na výchozí stav.</p>
+ */
+void inicializujMatici(Tmatice *matice, float hodnota);
+
+
 /** \brief Vytiskne matici na obrazovku.
  *
  * \param matice const Tmatice* Ukazatel na řádně vyrobenou matici.
