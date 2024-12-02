@@ -56,15 +56,6 @@ void upravaMatice(Tmatice *m)
     }
 }
 
-void nulovaniDiagonaly(Tmatice *m)
-{
-    for(int r = 0; r < m->radku; r++)
-    {
-        m->prvek[r][r] = 0.0;
-    }
-}
-
-
 void gaussSeidlova(Tmatice *m, float eps, Tmatice *x) // x muze byt i jen 1D pole a nemusi byt zbytecne 2D pole
 {
     bool jePresny = false; // na zacatku zaciname pesimisticky
@@ -161,7 +152,6 @@ void testJ(char * adresaSouboru, float eps)
     }
 
     upravaMatice(m);
-    nulovaniDiagonaly(m);
     jacobiho(m, eps, x);
 
     tiskReseni(x);
@@ -202,7 +192,6 @@ void testGS(char * adresaSouboru, float eps)
     }
 
     upravaMatice(m);
-    nulovaniDiagonaly(m);
     gaussSeidlova(m, eps, x);
 
     tiskReseni(x);
