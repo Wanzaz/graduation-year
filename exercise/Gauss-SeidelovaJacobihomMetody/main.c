@@ -1,7 +1,7 @@
 /* Téma matice a moduly - varianta s polem pevných rozměrů
  *
- * Autor: Podepiš se
- * Datum: today (+ Ctrl+J)
+ * Autor: Ondrej Pazourek
+ * Datum: 30.11.2024
  *
  * Verze: 2.1
  * Errata:
@@ -30,7 +30,7 @@ bool jeDDM(Tmatice *m)
     float sum = 0.0;
     for (int r = 0; r < m->radku; ++r) {
         for (int s = 0; s < m->sloupcu - 1; ++s) {
-            if (s != r) {
+            if (s != r) { // krome diagonalniho prvku
                 sum += m->prvek[r][s];
             }
         }
@@ -55,6 +55,15 @@ void upravaMatice(Tmatice *m)
         m->prvek[r][r] = 0.0;
     }
 }
+
+void nulovaniDiagonaly(Tmatice *m)
+{
+    for(int r = 0; r < m->radku; r++)
+    {
+        m->prvek[r][r] = 0.0;
+    }
+}
+
 
 void gaussSeidlova(Tmatice *m, float eps, Tmatice *x) // x muze byt i jen 1D pole a nemusi byt zbytecne 2D pole
 {
@@ -152,6 +161,7 @@ void testJ(char * adresaSouboru, float eps)
     }
 
     upravaMatice(m);
+    nulovaniDiagonaly(m);
     jacobiho(m, eps, x);
 
     tiskReseni(x);
@@ -192,6 +202,7 @@ void testGS(char * adresaSouboru, float eps)
     }
 
     upravaMatice(m);
+    nulovaniDiagonaly(m);
     gaussSeidlova(m, eps, x);
 
     tiskReseni(x);
