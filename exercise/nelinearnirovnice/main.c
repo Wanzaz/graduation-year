@@ -14,6 +14,19 @@ typedef struct {
     float epsilon;       // Přesnost
 } TestCase;
 
+// Struktura pro testovací funkce - Newton
+typedef struct {
+    const char* nazev;
+    Tfun f;
+    Tfun df;
+    float x0;
+} TestCaseN;
+
+typedef struct {
+    float koef[100];
+    int rad;
+} Tpoly;
+
 // 1. Kvadratická funkce: x^2 - 4 (má kořeny ±2)
 float quadratic(float x) {
     return x * x - 4;
@@ -33,6 +46,27 @@ float sine(float x) {
 float no_root(float x) {
     return x * x + 1;
 }
+
+// Derivace: f'(x) = 2x
+float quadratic_derivative(float x) {
+    return 2 * x;
+}
+
+// Derivace: f'(x) = 2
+float linear_derivative(float x) {
+    return 2;
+}
+
+// Derivace: f'(x) = cos(x)
+float sine_derivative(float x) {
+    return cos(x);
+}
+
+// Derivace: f'(x) = 2x
+float no_root_derivative(float x) {
+    return 2 * x;
+}
+
 
 
 
@@ -121,8 +155,13 @@ float metodaSecen(float a, float b, float eps, Tfun func)
     float fa = func(a);
     float fb = func(b);
     float c, fc;
+    int i = 0;
 
     while (fabs(fb) >= eps) {
+        if (i >= 1000) {
+            // Pokud překročíme maximální počet iterací, vrátíme nějakou hodnotu indikující chybu
+            return NAN; // NAN značí "Not a Number", což indikuje nedefinovaný výsledek
+        }
         // Vypočítáme nový bod pomocí vzorce metody sečen
         c = b - fb * (b - a) / (fb - fa);
         fc = func(c);
@@ -132,17 +171,57 @@ float metodaSecen(float a, float b, float eps, Tfun func)
         fa = fb;   // Aktualizujeme f(a)
         b = c;     // Posuneme bod 'b' na nový bod 'c'
         fb = fc;   // Aktualizujeme f(b)
+
+        i++;
     }
 
     return b;  // Návrat posledního odhadu kořene
 }
 
-
-
-float newtonovaMetoda(float a, float b, float eps, Tfun func)
-{
-
+float f(float x){
+    float koef[]={1.0,5.0,6.0};
+    return hornerScheme(koef,2,x);
 }
+
+float fd(float x){
+    float koef[]={2.0,5.0};
+    return hornerScheme(koef,1,x);
+}
+
+float newtonovaMetoda(float x, float eps, Tfun func, Tfun dfunc) {
+    int i = 0; // Počítadlo iterací
+
+    while (fabs(func(x)) >= eps) {
+        if (i >= 1000) {
+            // Pokud překročíme maximální počet iterací, vrátíme nějakou hodnotu indikující chybu
+            return NAN; // NAN značí "Not a Number", což indikuje nedefinovaný výsledek
+        }
+        if (dfunc(x) == 0) {
+            // Pokud je derivace nulová, metoda nemůže pokračovat
+            return NAN;
+        }
+
+        x = x - func(x) / dfunc(x); // Aktualizujeme bod pomocí Newtonova vzorce
+
+        i++; // Zvýšíme počítadlo iterací
+    }
+
+    return x; // Návrat nalezeného kořene
+}
+
+void testNewtonovaMetoda() {
+    float pocatecniOdhad = 1.0; // Počáteční odhad
+    float tolerance = 0.0001;     // Přesnost
+
+    float koren = newtonovaMetoda(pocatecniOdhad, tolerance, f, fd);
+
+    if (isnan(koren)) {
+        printf("Newtonova metoda selhala nebo překročila maximální počet iterací.\n");
+    } else {
+        printf("Nalezený kořen: %f\n", koren);
+    }
+}
+
 
 void test_horner_scheme() {
     printf("Spouštím testy pro Hornerovo schéma...\n\n");
@@ -204,11 +283,42 @@ void test(Talg func) {
 }
 
 
+void testNewton() {
+    TestCaseN testy[] = {
+        {"Kvadratická (x^2 - 4)", quadratic, quadratic_derivative, 1.0},
+        {"Lineární (2x - 6)", linear, linear_derivative, 1.0},
+        {"Sinusová (sin(x))", sine, sine_derivative, 0.5},
+        {"Funkce bez kořene (x^2 + 1)", no_root, no_root_derivative, 1.0}
+    };
 
+    int pocetTestu = sizeof(testy) / sizeof(TestCase);
+
+    printf("====================================\n");
+    printf("Spouštím testy pro funkci Newtonova metoda...\n\n");
+    printf("====================================\n");
+
+    for (int i = 0; i < pocetTestu; i++) {
+        float root = newtonovaMetoda(testy[i].x0, 0.0001, testy[i].f, testy[i].df);
+
+        printf("[%d] %s\n", i + 1, testy[i].nazev);
+        if (isnan(root)) {
+            printf("    ❌ Newtonova metoda selhala (žádný reálný kořen nebo derivace = 0)\n");
+        } else {
+            printf("    ✅ Nalezený kořen: %.6f\n", root);
+        }
+        printf("------------------------------------\n");
+    }
+}
 
 
 int main()
 {
+    // V tomto případě se změní způsob, jakým předáváme polynom do funkcí, protože místo použití jednotlivých koeficientů pro výpočty použijeme strukturu Tpoly, která obsahuje jak pole koeficientů, tak stupeň polynomu.
+    Tpoly p={
+        .koef={-2.1,0.0,22.4,0.0,-3.0},
+        .rad=4
+    };
+
     test_horner_scheme();
 
     printf("Spouštím testy pro funkci Bisekce...\n\n");
@@ -217,5 +327,6 @@ int main()
     test(regulaFalsi);
     printf("Spouštím testy pro funkci Metoda secen...\n\n");
     test(metodaSecen);
+    testNewton();
     return 0;
 }
