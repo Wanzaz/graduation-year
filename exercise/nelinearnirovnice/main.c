@@ -90,20 +90,20 @@ float bisekce(float a, float b, float eps, Tfun func)
         return 0.0 / 0.0; // Vrací NAN, pokud není kořen v intervalu
     }
 
-    float middle = (a + b) / 2;
-    float fmiddle;
+    float c = (a + b) / 2;
+    float fc;
 
-    while (fabs(fmiddle = func(middle)) >= eps) {
-        if (fa * fmiddle < 0) {
-            b = middle;
+    while (fabs(fc = func(c)) >= eps) {
+        if (fa * fc < 0) {
+            b = c;
         } else {
-            a = middle;
-            fa = fmiddle;
+            a = c;
+            fa = fc;
         }
-        middle = (a + b) / 2;
+        c = (a + b) / 2;
      }
 
-    return middle; // vraci middle, ne fmiddle!
+    return c;
 }
 
 
