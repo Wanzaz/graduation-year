@@ -16,58 +16,58 @@ double horner(TPolynomial* polynomial, double value)
     return result;
 }
 
-double solve(TPolynomial* polynomial, double left, double right, double e)
+double solve(TPolynomial* polynomial, double a, double b, double e)
 {
-    double middle = (right + left) / 2;
-    double fleft = horner(polynomial, left);
-    double fmiddle;
-    while (fabs(fmiddle = horner(polynomial, middle)) >= e) {
-        if (fleft * fmiddle < 0) {
-            right = middle;
+    double c = (b + a) / 2;
+    double fa = horner(polynomial, a);
+    double fc;
+    while (fabs(fc = horner(polynomial, c)) >= e) {
+        if (fa * fc < 0) {
+            b = c;
         } else {
-            fleft = fmiddle;
-            left = middle; 
+            fa = fc;
+            a = c; 
         }
 
-        middle = (right + left) / 2;
-    }
-
-    return middle;
-}
-
-double solveRegula(TPolynomial* polynomial, double left, double right, double e)
-{
-    double fleft = horner(polynomial, left);
-    double fright = horner(polynomial, right);
-    double c = (left * fright - right * fleft) / (fright - fleft);
-    double fmiddle;
-    while (fabs(fmiddle = horner(polynomial, c)) >= e) {
-        if (fleft * fmiddle < 0) {
-            right = c;
-            fright = fmiddle;
-        } else {
-            fleft = fmiddle;
-            left = c; 
-        }
-
-        c = (left * fright - right * fleft) / (fright - fleft);
+        c = (b + a) / 2;
     }
 
     return c;
 }
 
-double solveIntersection(TPolynomial* polynomial, double left, double right, double e)
+double solveRegula(TPolynomial* polynomial, double a, double b, double e)
 {
-    double fleft = horner(polynomial, left);
-    double fright = horner(polynomial, right);
-    double c = (left * fright - right * fleft) / (fright - fleft);
-    double fmiddle;
-    while (fabs(fmiddle = horner(polynomial, c)) >= e) {
-        fleft = fright;
-        left = right;
-        fright = fmiddle;
-        right = c;
-        c = (left * fright - right * fleft) / (fright - fleft);
+    double fa = horner(polynomial, a);
+    double fb = horner(polynomial, b);
+    double c = (a * fb - b * fa) / (fb - fa);
+    double fc;
+    while (fabs(fc = horner(polynomial, c)) >= e) {
+        if (fa * fc < 0) {
+            b = c;
+            fb = fc;
+        } else {
+            fa = fc;
+            a = c; 
+        }
+
+        c = (a * fb - b * fa) / (fb - fa);
+    }
+
+    return c;
+}
+
+double solveIntersection(TPolynomial* polynomial, double a, double b, double e)
+{
+    double fa = horner(polynomial, a);
+    double fb = horner(polynomial, b);
+    double c = (a * fb - b * fa) / (fb - fa);
+    double fc;
+    while (fabs(fc = horner(polynomial, c)) >= e) {
+        fa = fb;
+        a = b;
+        fb = fc;
+        b = c;
+        c = (a * fb - b * fa) / (fb - fa);
     }
 
     return c;
