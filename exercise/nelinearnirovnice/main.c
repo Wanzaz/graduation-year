@@ -114,6 +114,10 @@ float regulaFalsi(float a, float b, float eps, Tfun func)
     float fb = func(b);
     float fc;
 
+    if (fa * fb > 0) {
+        return NAN; // Vrací NAN, pokud není kořen v intervalu
+    }
+
     float c = a + fa*(b - a)/(fa - fb);
 
     while (fabs(fc = func(c)) >= eps) {
