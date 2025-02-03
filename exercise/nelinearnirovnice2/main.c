@@ -16,8 +16,6 @@ double horner(TPolynomial* polynomial, double value)
     return result;
 }
 
-// if we were in haskell we would have passed partialy called horner which would be curried
-// we expect that the value is in the interval
 double solve(TPolynomial* polynomial, double left, double right, double e)
 {
     double middle = (right + left) / 2;
@@ -80,7 +78,6 @@ double solveNewton(TPolynomial* polynomial, TPolynomial* derivative, double x, d
     double fx = horner(polynomial, x);
     double dfx = horner(derivative, x);
     if (dfx == 0) {
-        // initial point was badly chosen, ses kokot proste, u cant find intersection when the line is paralel to the x axis, which in this case, by definition is, also it would cost some division problems but thats not nerdy enough
         return NAN;
     }
     double x1 = x - (fx / dfx);
