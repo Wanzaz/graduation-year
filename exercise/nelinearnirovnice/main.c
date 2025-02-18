@@ -69,11 +69,11 @@ float no_root_derivative(float x) {
 
 
 
-
-float hornerScheme(float coef[], int n, float x)
+// DEGREE - stupen polynomu !!!!!
+float hornerScheme(float coef[], int degree, float x)
 {
     float sum = 0.0;
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i <= degree; i++) {
         sum  = sum*x + coef[i];
     }
 
@@ -238,16 +238,16 @@ void test_horner_scheme() {
 
     // Testy
     printf("Test 1: x^2 - 4x + 4 při x = 2\n");
-    printf("  Výsledek: %f (očekávaný: 0.000000)\n", hornerScheme(coef1, 3, 2.0));
+    printf("  Výsledek: %f (očekávaný: 0.000000)\n", hornerScheme(coef1, 2, 2.0));
 
     printf("Test 2: x^3 + 2x^2 + x + 1 při x = 1\n");
-    printf("  Výsledek: %f (očekávaný: 5.000000)\n", hornerScheme(coef2, 4, 1.0));
+    printf("  Výsledek: %f (očekávaný: 5.000000)\n", hornerScheme(coef2, 3, 1.0));
 
     printf("Test 3: 3x^4 + x^3 - 2x^2 + 7x - 4 při x = 2\n");
-    printf("  Výsledek: %f (očekávaný: 58.000000)\n", hornerScheme(coef3, 5, 2.0));
+    printf("  Výsledek: %f (očekávaný: 58.000000)\n", hornerScheme(coef3, 4, 2.0));
 
     printf("Test 4: Konstanta 5 při x = 10\n");
-    printf("  Výsledek: %f (očekávaný: 5.000000)\n", hornerScheme(coef4, 1, 10.0));
+    printf("  Výsledek: %f (očekávaný: 5.000000)\n", hornerScheme(coef4, 0, 10.0));
 
     printf("\nTesty Hornerova schématu dokončeny.\n");
 }
