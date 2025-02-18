@@ -68,6 +68,7 @@ float no_root_derivative(float x) {
 }
 
 
+// POZOR na implentaci hornerova schemata
 
 // DEGREE - stupen polynomu !!!!!
 float hornerScheme(float coef[], int degree, float x)
@@ -79,6 +80,17 @@ float hornerScheme(float coef[], int degree, float x)
 
     return sum;
 }
+
+// POCET KOEFICIENTU v poli....
+/* float hornerScheme(float coef[], int pocet_koeficientu, float x) */
+/* { */
+/*     float sum = 0.0; */
+/*     for (int i = 0; i < pocet koeficientu; i++) { */
+/*         sum  = sum*x + coef[i]; */
+/*     } */
+
+/*     return sum; */
+/* } */
 
 float bisekce(float a, float b, float eps, Tfun func)
 {
