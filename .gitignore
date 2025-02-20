@@ -6,7 +6,7 @@
 **/.qtc_clangd
 **/Makefile
 **/.gitignore
-**/.*~
+*~
 
 # Prerequisites
 *.d
