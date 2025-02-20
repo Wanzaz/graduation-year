@@ -33,47 +33,8 @@
 ;(move 1 2)       ; Tento tah není možný, proto funkce vrací false. V předchozích
 ;                 ; případech vracela true.
 
-; hanoi(3, A, B, C)  
-; ├── hanoi(2, A, C, B)  ; Přesuneme 2 disky z A na B pomocí C
-; │   ├── hanoi(1, A, B, C)  ; Přesuneme 1 disk z A na C pomocí B
-; │   │   ├── hanoi(0, A, C, B)  → Konec
-; │   │   ├── move A → C  ✅
-; │   │   ├── hanoi(0, B, A, C)  → Konec
-; │   │
-; │   ├── move A → B  ✅
-; │   │
-; │   ├── hanoi(1, C, A, B)  ; Přesuneme 1 disk z C na B pomocí A
-; │   │   ├── hanoi(0, C, B, A)  → Konec
-; │   │   ├── move C → B  ✅
-; │   │   ├── hanoi(0, A, C, B)  → Konec
-; │
-; ├── move A → C  ✅   ; Největší disk se přesune na cílovou tyč
-; │
-; ├── hanoi(2, B, A, C)  ; Přesuneme 2 disky z B na C pomocí A
-; │   ├── hanoi(1, B, C, A)  ; Přesuneme 1 disk z B na A pomocí C
-; │   │   ├── hanoi(0, B, A, C)  → Konec
-; │   │   ├── move B → A  ✅
-; │   │   ├── hanoi(0, C, B, A)  → Konec
-; │   │
-; │   ├── move B → C  ✅
-; │   │
-; │   ├── hanoi(1, A, B, C)  ; Přesuneme 1 disk z A na C pomocí B
-; │   │   ├── hanoi(0, A, C, B)  → Konec
-; │   │   ├── move A → C  ✅
-; │   │   ├── hanoi(0, B, A, C)  → Konec
-
-
-; 1. Přesuneme (n-1) disků z A na B (C je pomocná)
-; 2. Přesuneme největší disk z A na C
-; 3. Přesuneme (n-1) disků z B na C (A je pomocná)
-
 (define (hanoi n a b c)
-  (if (> n 0)
-      (begin
-        (hanoi (- n 1) a c b)
-        (move a c)
-        (hanoi (- n 1) b a c)
-  )))
+  "není implementováno")
 
 (define (run-hanoi n)
   (begin
@@ -81,4 +42,4 @@
     (init-towers n)
     (hanoi n 1 2 3)))
 
-(run-hanoi 3)
+(run-hanoi 4)
